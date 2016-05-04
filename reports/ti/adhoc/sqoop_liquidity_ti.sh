@@ -1,0 +1,1 @@
+sqoop export --connect jdbc:teradata://heahada01/DATABASE=shc_work_tbls  --username msaha --password n745tzjax2 --table rts_liquidity_daily_sqoop --export-dir /user/hive/warehouse/real_time_scoring.db/liquidity_report_daily/* --num-mappers 60 --input-fields-terminated-by '|' --input-lines-terminated-by '\n'

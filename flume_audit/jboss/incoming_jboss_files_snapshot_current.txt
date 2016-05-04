@@ -1,0 +1,5 @@
+Found 4 items
+-rw-r--r--   3 rtsadmin supergroup  105389646 2016-03-06 00:24 /incoming/rts/flume/jboss/2016/03/06/jboss-.1457240400015.gz
+-rw-r--r--   3 rtsadmin supergroup  109122915 2016-03-06 00:47 /incoming/rts/flume/jboss/2016/03/06/jboss-.1457240400016.gz
+-rw-r--r--   3 rtsadmin supergroup  106534295 2016-03-06 01:09 /incoming/rts/flume/jboss/2016/03/06/jboss-.1457240400017.gz
+-rw-r--r--   3 rtsadmin supergroup       1451 2016-03-06 01:09 /incoming/rts/flume/jboss/2016/03/06/jboss-.1457240400018.gz.tmp

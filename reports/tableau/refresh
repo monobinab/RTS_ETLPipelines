@@ -1,0 +1,2 @@
+use real_time_scoring;
+refresh api_calls_fastness_percentage;

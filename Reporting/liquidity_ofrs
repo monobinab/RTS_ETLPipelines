@@ -1,0 +1,19 @@
+create table if not exists real_time_scoring.roc_eml_mbrs (
+LYL_ID_NO string,
+OFR_CD string,
+SEND_DT string,
+OFR_DESC string,
+sponsor_bu string,
+fmt_cd string
+)
+row format delimited
+fields terminated by '|'
+lines terminated by '\n'
+stored as textfile
+;
+
+sudo -u rtsadmin hadoop fs -copyFromLocal /staging/roc_eml_02262015.txt /smith/rts/reports/roc_eml_02262015.txt
+
+LOAD DATA INPATH '/smith/rts/reports/roc_eml_02262015.txt' INTO TABLE real_time_scoring.roc_eml_mbrs;
+
+\\USKIHFIL4\Public\Advertising\Customer Analytics Deliverables\Documentation\RealTimeScoring\udf.jar

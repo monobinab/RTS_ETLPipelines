@@ -1,0 +1,2 @@
+use real_time_Scoring;
+invalidate metadata rts_avg_change_in_scores_by_source;

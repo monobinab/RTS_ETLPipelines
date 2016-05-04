@@ -1,0 +1,49 @@
+LOGON TDAdhoc.intra.searshc.com/msaha,n745tzjax2;
+drop table shc_work_tbls.mdtags_daily;
+CREATE SET TABLE shc_work_tbls.mdtags_daily ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL,
+     CHECKSUM = DEFAULT
+     (
+     encrypted_lid varchar(50), 
+     effective_dt varchar(20), 
+     expiry_dt varchar(20),
+     tag_nm varchar(50)
+     )
+     PRIMARY INDEX ( encrypted_lid, tag_nm, effective_dt );
+
+DROP TABLE shc_work_tbls.mdtags_daily_err1;
+DROP TABLE shc_work_tbls.mdtags_daily_ERR2;
+ERRLIMIT 1;
+BEGIN LOADING
+    shc_work_tbls.mdtags_daily
+    ERRORFILES
+     shc_work_tbls.mdtags_daily_ERR1,
+     shc_work_tbls.mdtags_daily_ERR2
+     CHECKPOINT 500000;
+
+SET RECORD vartext "|" DISPLAY_ERRORS NOSTOP;
+
+DEFINE
+       IN_encrypted_lid       (varchar(50))
+      ,IN_effective_dt                 (varchar(20))
+      ,IN_expiry_dt                 (varchar(20))
+      ,IN_tag_nm           (varchar(50))
+      file = /staging/parsed_membermdtagsrts.txt;
+INSERT INTO shc_work_tbls.mdtags_daily
+      (
+        encrypted_lid
+        ,effective_dt
+        ,expiry_dt
+        ,tag_nm
+	)
+values
+      (
+      	 :IN_encrypted_lid        
+	,:IN_effective_dt    
+      	,:IN_expiry_dt
+        ,:IN_tag_nm
+      );
+
+END LOADING;
+LOGOFF;

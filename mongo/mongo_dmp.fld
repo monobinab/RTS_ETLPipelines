@@ -1,0 +1,53 @@
+LOGON TDAdhoc.intra.searshc.com/msaha,n745tzjax2;
+drop table shc_work_tbls.occasionResponses_daily;
+CREATE SET TABLE shc_work_tbls.occasionResponses_daily ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL,
+     CHECKSUM = DEFAULT
+     (
+     encrypted_lid varchar(50), 
+     eid varchar(20), 
+     tag varchar(50),
+     record_ts varchar(23),
+     topology varchar(200)
+     )
+     PRIMARY INDEX ( encrypted_lid );
+
+DROP TABLE shc_work_tbls.occasionResponses_daily_err1;
+DROP TABLE shc_work_tbls.occasionResponses_daily_ERR2;
+ERRLIMIT 1;
+BEGIN LOADING
+    shc_work_tbls.occasionResponses_daily
+    ERRORFILES
+     shc_work_tbls.occasionResponses_daily_ERR1,
+     shc_work_tbls.occasionResponses_daily_ERR2
+     CHECKPOINT 500000;
+
+SET RECORD vartext "," DISPLAY_ERRORS NOSTOP;
+
+DEFINE
+       IN_encrypted_lid       (varchar(50))
+      ,IN_eid                 (varchar(20))
+      ,IN_tag                 (varchar(50))
+      ,IN_record_ts           (varchar(23))
+      ,IN_topology            (varchar(200))
+      file = /staging/occasionResponses_noheader.csv;
+INSERT INTO shc_work_tbls.occasionResponses_daily
+      (
+        encrypted_lid
+        ,eid
+        ,tag
+        ,record_ts
+        ,topology
+	)
+values
+      (
+      	 :IN_encrypted_lid        
+	,:IN_eid    
+      	,:IN_tag
+        ,:IN_record_ts
+        ,:IN_topology
+      );
+
+END LOADING;
+LOGOFF;

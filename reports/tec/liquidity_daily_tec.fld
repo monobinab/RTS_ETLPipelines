@@ -1,0 +1,57 @@
+LOGON TDAdhoc.intra.searshc.com/msaha,n745tzjax2;
+drop table shc_work_tbls.rts_liquidity_daily_tec;
+CREATE SET TABLE shc_work_tbls.rts_liquidity_daily_tec ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL,
+     CHECKSUM = DEFAULT
+     (
+     memberid varchar(16), 
+     run_date varchar(20), 
+     modelName varchar(50),
+     modelRank varchar(4), 
+     percentile varchar(10),
+     client varchar(20)
+     )
+     PRIMARY INDEX ( memberid );
+
+DROP TABLE shc_work_tbls.rts_liquidity_daily_tec_err1;
+DROP TABLE shc_work_tbls.rts_liquidity_daily_tec_ERR2;
+ERRLIMIT 1;
+BEGIN LOADING
+    shc_work_tbls.rts_liquidity_daily_tec
+    ERRORFILES
+     shc_work_tbls.rts_liquidity_daily_tec_ERR1,
+     shc_work_tbls.rts_liquidity_daily_tec_ERR2
+     CHECKPOINT 500000;
+
+SET RECORD vartext "|" DISPLAY_ERRORS NOSTOP;
+
+DEFINE
+       IN_memberid                 (varchar(16))
+      ,IN_run_date                 (varchar(20))
+      ,IN_modelName                (varchar(50))
+      ,IN_modelRank                 (varchar(4))
+      ,IN_percentile               (varchar(10))
+      ,IN_client                   (varchar(20))
+      file = /staging/liquidity_dailyreport_tec_combined.txt;
+INSERT INTO shc_work_tbls.rts_liquidity_daily_tec
+      (
+        memberid
+        ,run_date
+        ,modelName
+        ,modelRank
+        ,percentile
+        ,client
+   )
+values
+      (
+      	 :IN_memberid        
+	,:IN_run_date    
+      	,:IN_modelName
+         ,:IN_modelRank          
+        ,:IN_percentile      
+        ,:IN_client  
+      );
+
+END LOADING;
+LOGOFF;

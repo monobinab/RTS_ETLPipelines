@@ -1,0 +1,2 @@
+use real_time_scoring;
+invalidate metadata api_avg_model_rank_daily;
