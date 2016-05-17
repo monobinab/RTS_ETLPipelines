@@ -1,0 +1,55 @@
+LOGON TDAdhoc.intra.searshc.com/msaha,n745tzjax2;
+drop table shc_work_tbls.rts_api_response_tec;
+CREATE  TABLE shc_work_tbls.rts_api_response_tec ,NO FALLBACK ,
+     NO BEFORE JOURNAL,
+     NO AFTER JOURNAL,
+     CHECKSUM = DEFAULT
+     (
+     memberid char(20),
+     run_date char(20),
+     modelid char(3),
+     modelname char(50),
+     client char(50)
+     )
+     PRIMARY INDEX ( memberid, run_date);
+
+DROP TABLE shc_work_tbls.rts_api_response_tec_err1;
+DROP TABLE shc_work_tbls.rts_api_response_tec_ERR2;
+ERRLIMIT 5;
+BEGIN LOADING
+    shc_work_tbls.rts_api_response_tec
+    ERRORFILES
+     shc_work_tbls.rts_api_response_tec_ERR1,
+     shc_work_tbls.rts_api_response_tec_ERR2
+     CHECKPOINT 500000;
+
+SET RECORD vartext "|" DISPLAY_ERRORS NOSTOP;
+
+DEFINE
+       IN_memberid                 (varchar(20))
+      ,IN_run_date            (varchar(20))
+      ,IN_modelid                  (varchar(3))
+      ,IN_modelname                (varchar(50))
+      ,IN_client                   (varchar(50))
+      file = /staging/rts/api_response_log_tec_staging.txt;
+
+
+INSERT INTO shc_work_tbls.rts_api_response_tec
+      (
+      memberid,
+      run_date,
+      modelid,
+      modelname,
+      client
+      )
+values
+      (
+      	 :IN_memberid
+         :IN_run_date,
+         :IN_modelid,        
+	,:IN_modelname    
+      	,:IN_client
+      );
+
+END LOADING;
+LOGOFF;
